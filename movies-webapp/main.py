@@ -11,14 +11,13 @@ import os
 from dotenv import find_dotenv, load_dotenv
 from flask_wtf.csrf import CSRFProtect
 
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
+load_dotenv()
 
 
 api_key = os.getenv("API_KEY")
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "a-very-secret-fallback-key")
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///movies.db"
+pp.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///movies.db")
 Bootstrap5(app)
 csrf = CSRFProtect(app)
 
@@ -70,11 +69,11 @@ def home():
 @app.route("/update/<int:index>", methods=["GET","POST"])
 def update(index):
     form = updateMovies()
-    to_update = db.session.execute(db.select(Movie).where(Movie.id == index)).scalar() 
+    
     if form.validate_on_submit():
         updated_rating = form.new_rating.data
         updated_review = form.new_review.data
-        
+        to_update = db.get_or_404(Movie, index)
         if updated_rating: 
             to_update.rating = form.new_rating.data
 
@@ -87,7 +86,7 @@ def update(index):
 
 @app.route('/delete/<int:index>')
 def delete(index):
-    to_delete = db.session.execute(db.select(Movie).where(Movie.id == index)).scalar()
+    to_delete = db.get_or_404(Movie, index)
     db.session.delete(to_delete)
     db.session.commit()
     return redirect(url_for('home'))
@@ -97,10 +96,13 @@ def add_movies():
     form =  addMovies()
     if form.validate_on_submit():
         movie_title = form.movie_title.data
-
         response = requests.get(MOVIE_DB_SEARCH_URL, params={"api_key": api_key, "query": movie_title})
-        data = response.json()["results"]
-        return render_template("select.html", options=data)
+        # MODIFIED: In add_movies()
+        if response.status_code == 200:
+            data = response.json().get("results", []) # Uses .get() to avoid KeyError
+            return render_template("select.html", options=data)
+        else:
+            return "API Error" # Friendly error instead of a crash        data = response.json()["results"]
     return render_template('add.html', form=form)
 
 @app.route("/find_movie/<int:id>") 
@@ -109,6 +111,10 @@ def find_movie(id):
         movie_api_url = f"{MOVIE_DB_INFO_URL}/{id}" 
         response = requests.get(movie_api_url, params={"api_key":api_key, "language":"en-US"})
         data = response.json()
+        # ADDED: In find_movie()
+        existing_movie = db.session.execute(db.select(Movie).where(Movie.title == data["title"])).scalar()
+        if existing_movie:
+            return redirect(url_for('home'))
         new_movie = Movie(
             title=data["title"],
             year=data["release_date"].split("-")[0],
@@ -123,4 +129,4 @@ def find_movie(id):
 
 if __name__ == '__main__':
     port = int(os.getenv("PORT", 10000))
-    app.run(host="0.0.0.0", port = port)
+    app.run(host="0.0.0.0", port = port, debug=False)
