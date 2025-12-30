@@ -76,7 +76,7 @@ def update(index):
     if form.validate_on_submit():
         updated_rating = form.new_rating.data
         updated_review = form.new_review.data
-        to_update = db.session.execute(db._select(Movie).where(Movie.id == index)).scalar()
+        to_update = db.get_or_404(Movie, index)
         if updated_rating: 
             to_update.rating = updated_rating
 
@@ -89,7 +89,7 @@ def update(index):
 
 @app.route('/delete/<int:index>')
 def delete(index):
-    to_delete = db.session.execute(db._select(Movie).where(Movie.id == index)).scalar()
+    to_delete =db.get_or_404(Movie, index)
     db.session.delete(to_delete)
     db.session.commit()
     return redirect(url_for('home'))
