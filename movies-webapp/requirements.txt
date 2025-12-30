@@ -1,5 +1,7 @@
 flask==2.3.2
-flask-bootstrap==2.2.0
+flask-bootstrap
+flask_bootstrap
+bootstrap-flask
 flask-sqlalchemy>=3.1.1
 flask-wtf==1.2.1
 python-dotenv>=1.0.0
