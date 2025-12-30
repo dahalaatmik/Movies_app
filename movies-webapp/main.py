@@ -78,10 +78,10 @@ def update(index):
         updated_review = form.new_review.data
         to_update = db.get_or_404(Movie, index)
         if updated_rating: 
-            to_update.rating = form.new_rating.data
+            to_update.rating = updated_rating
 
         if updated_review:
-            to_update.review = form.new_review.data
+            to_update.review = updated_review
 
         db.session.commit()
         return redirect(url_for('home'))
