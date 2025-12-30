@@ -72,11 +72,10 @@ def home():
 @app.route("/update/<int:index>", methods=["GET","POST"])
 def update(index):
     form = updateMovies()
-    
+    to_update = db.get_or_404(Movie, index)
     if form.validate_on_submit():
         updated_rating = form.new_rating.data
         updated_review = form.new_review.data
-        to_update = db.get_or_404(Movie, index)
         if updated_rating: 
             to_update.rating = updated_rating
 
