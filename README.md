@@ -17,3 +17,4 @@ There were serval obstacles that I had to face during the deployment of this App
 
 To:do
 - add admin login so that only admin can login to update and delete movies ??? #This todo is just a consideration not a must. 
+- Also make some styling changes to the website so it looks like a proper website not a 10 year old copied it from the internet
