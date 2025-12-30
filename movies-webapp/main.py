@@ -118,6 +118,10 @@ def find_movie(id):
 
         return redirect(url_for("update",index=new_movie.id))
 
-
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",debug=True)
+    # Render provides a PORT environment variable. 
+    # If it doesn't exist (like on your local machine), it defaults to 10000.
+    port = int(os.environ.get("PORT", 10000))
+    
+    # Bind to 0.0.0.0 so it is reachable within Render's network
+    app.run(host="0.0.0.0", port=port)
