@@ -12,3 +12,8 @@ There were serval obstacles that I had to face during the deployment of this App
 - flask_bootstrap, bootstrap-flask etc etc. was confusing so fixed with the correct module
 - fix the default port issue that was render's requirement to run the web-app on the internet
 - Added csrf protection to the app so that flask, flaskforms and wtforms are csrf protected over the internet. 
+- Moved from sqlite3 to postgressql for just prodution not local so that when the server restarts ( cause Render free stops after inactivity ) the data stays and doesn't clear/kill itself like in sqlite3.
+
+
+To:do
+- add admin login so that only admin can login to update and delete movies ??? #This todo is just a consideration not a must. 
