@@ -17,7 +17,7 @@ load_dotenv()
 api_key = os.getenv("API_KEY")
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "a-very-secret-fallback-key")
-pp.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///movies.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///movies.db")
 Bootstrap5(app)
 csrf = CSRFProtect(app)
 
