@@ -17,7 +17,7 @@ load_dotenv(dotenv_path)
 
 api_key = os.getenv("API_KEY")
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "a-very-secret-fallback-key")
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///movies.db"
 Bootstrap5(app)
 csrf = CSRFProtect(app)
@@ -122,5 +122,5 @@ def find_movie(id):
 
 
 if __name__ == '__main__':
-    port = os.getenv("PORT", 1000)
+    port = int(os.getenv("PORT", 10000))
     app.run(host="0.0.0.0", port = port)
