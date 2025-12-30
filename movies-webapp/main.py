@@ -13,11 +13,14 @@ from flask_wtf.csrf import CSRFProtect
 
 load_dotenv()
 
+db_url = os.environ.get("DATABASE_URL", "sqlite:///movies.db")
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 api_key = os.getenv("API_KEY")
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "a-very-secret-fallback-key")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///movies.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 Bootstrap5(app)
 csrf = CSRFProtect(app)
 
